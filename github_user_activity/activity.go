@@ -11,10 +11,10 @@ import (
 
 const Usage = `Usage: github-activity [OPTION] Username
 
-			The program lists by default the Recent activities
-			of the provided username on the standard output.
-			Flags:
-				-t: Specifies an exact event type to list.`
+Github user activity lists by default the Recent activities
+of the provided username on the standard output.
+Flags:
+	-t: Specifies an exact event type to list.`
 
 type Client struct {
 	BaseURL    string
@@ -22,20 +22,7 @@ type Client struct {
 	HTTPClient *http.Client
 }
 
-type Activities struct {
-	Events []struct {
-		Type    string
-		Repo    []string
-		Payload []string
-	}
-}
 
-type Events struct {
-	Type string
-	Repo struct {
-		Name string
-	}
-}
 
 func NewClient() *Client {
 	return &Client{
@@ -51,13 +38,24 @@ func (c *Client) FormatURL(username string) string {
 	return fmt.Sprintf("%s/users/%s/events", c.BaseURL, username)
 }
 
+func HandleResponseStatusError(status int) error {
+	switch status {
+	case http.StatusOK:
+	case http.StatusForbidden:
+		return fmt.Errorf("Github API rate limit exceeded")
+	case http.StatusNotFound:
+		return fmt.Errorf("User not found")
+	}
+	return nil
+}
+
 func (c *Client) GetActivities(URL string) ([]byte, error) {
 	req, err := http.NewRequest("GET", URL, nil)
 	if err != nil {
 		return nil, err
 	}
 	if c.ApiKey != "" {
-		req.Header.Set("Authorization", "Bearer "+c.ApiKey)
+		req.Header.Set("Authorization", "Bearer " + c.ApiKey)
 	}
 	req.Header.Set("Accept", "application/vnd.github+json")
 	req.Header.Set("X-GitHub-Api-Version", "2022-11-28")
@@ -67,23 +65,15 @@ func (c *Client) GetActivities(URL string) ([]byte, error) {
 		return nil, err
 	}
 	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("Unexpected response status %q", resp.Status)
+	
+	if err := HandleResponseStatusError(resp.StatusCode); err != nil {
+		return nil, err
 	}
 	data, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
 	}
 	return data, nil
-}
-
-func ParseAndPrintActivities(data []byte) error {
-	return nil
-}
-
-func ParseAndPrintActivity(data []byte, event string) error {
-	return nil
 }
 
 func Main() {
@@ -100,19 +90,13 @@ func Main() {
 	URL := c.FormatURL(args[0])
 	activities, err := c.GetActivities(URL)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "unexpected error: %v", err)
+		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
 
-	if eventType != "" {
-		if err := ParseAndPrintActivity(activities, eventType); err != nil {
-			fmt.Fprintf(os.Stderr, "unexpected error: %v", err)
-			os.Exit(1)
-		}
+	if *eventType != "" {
+		ParseAndListActivities(activities, eventType)
 		return
 	}
-	if err := ParseAndPrintActivities(activities); err != nil {
-		fmt.Fprintf(os.Stderr, "unexpected error: %v", err)
-		os.Exit(1)
-	}
+	ParseAndListActivities(activities, nil)
 }

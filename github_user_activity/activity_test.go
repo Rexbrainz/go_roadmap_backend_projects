@@ -7,17 +7,20 @@ import (
 	"go_roadmap_backend_projects/activity"
 )
 
-func TestGetActivity_ReturnsLatestUserGithubActivity(t *testing.T) {
+func TestFormatPushEvent(t *testing.T) {
 	t.Parallel()
 
-	want := &activity.Activity{
-		Events: []byte{},
-	}
-	got, err := activity.GetActivities("Rexbrainz")
+	payload := []byte(`{
+		"ref": "refs/heads/main",
+		"before": "abc",
+		"head": "def"
+	}`)
+
+	got, err := activity.FormatPushEvent(payload, "Rexbrainz/repo")
 	if err != nil {
 		t.Fatal(err)
 	}
-
+	want := "Pushed updates to Rexbrainz/repo"
 	if !cmp.Equal(want, got) {
 		t.Error(cmp.Diff(want, got))
 	}

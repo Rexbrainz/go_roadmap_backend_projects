@@ -22,12 +22,12 @@ The goal of this monorepo is to:
 
 | Project | Status | Description |
 |--------|--------|-------------|
-| **Task Tracker** | ✅ Completed | A CLI app to track tasks and manage to-do items (first project from roadmap.sh backend projects) :contentReference[oaicite:2]{index=2} |
+| **Task Tracker** | ✅ Completed | A CLI application for managing tasks with persistent local storage |
+| **GitHub User Activity CLI** | ✅ Completed | A Go-based CLI that displays recent public GitHub user activity |
 <!-- Add future projects here -->
 
 Additional project ideas from roadmap.sh include:
 
-- GitHub User Activity CLI  
 - Expense Tracker CLI  
 - Number Guessing Game CLI  
 - Unit Converter Web App  
@@ -57,12 +57,13 @@ Additional project ideas from roadmap.sh include:
 ```text
 go-backend-projects/
 ├── README.md                 # Monorepo overview
-├── go.work                  # Go workspace file
 ├── projects/
-│   ├── task-tracker/        # First completed project
-│   │   ├── README.md        # Project details
+│   ├── task-tracker/
+│   │   ├── README.md
 │   │   ├── go.mod
 │   │   └── ...
-│   └── <next-project>/      # Future project
-├── shared/                  # Shared utilities (optional)
-├── deploy/                  # Deployment (Docker, Kubernetes, Terraform)
+│   ├── github-user-activity/
+│   │   ├── README.md
+│   │   ├── go.mod
+│   │   └── ...
+│   └── <next-project>/
