@@ -3,7 +3,7 @@
 This repository is a **monorepo** of backend projects implemented in **Go** as part of the backend development learning path from **roadmap.sh**.  
 Each project lives in its own folder under `projects/` and has its own documentation.
 
-🔗 **roadmap.sh backend projects:** https://roadmap.sh/backend/projects :contentReference[oaicite:1]{index=1}
+🔗 **roadmap.sh backend projects:** https://roadmap.sh/backend/projects
 
 ---
 
