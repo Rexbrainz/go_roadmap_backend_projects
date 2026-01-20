@@ -4,8 +4,6 @@ A command-line application written in Go that fetches and displays the **recent 
 
 This project is based on the **GitHub User Activity** project from the https://roadmap.sh/backend/projects backend projects list.
 
-🔗 Project reference: https://roadmap.sh/projects/github-user-activity
-
 ---
 
 ## 🚀 Overview
@@ -85,3 +83,6 @@ The application still works correctly without a token.
 ./program_name [OPTION] <username>
 OPTION filters by event type.
 ./program_name -t Event <username>
+```
+## Project Source
+This project is one of the tasks from https://roadmap.sh/projects/github-user-activity
