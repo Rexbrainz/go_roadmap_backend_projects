@@ -2,7 +2,7 @@
 
 A command-line application written in Go that fetches and displays the **recent public GitHub activity** of a user using the GitHub Events API.
 
-This project is based on the **GitHub User Activity** project from the :contentReference[oaicite:0]{index=0} backend projects list.
+This project is based on the **GitHub User Activity** project from the https://roadmap.sh/backend/projects backend projects list.
 
 🔗 Project reference: https://roadmap.sh/projects/github-user-activity
 
