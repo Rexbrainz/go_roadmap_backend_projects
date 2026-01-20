@@ -20,10 +20,13 @@ The goal of this monorepo is to:
 
 ## 📦 Projects Overview
 
-| Project | Status | Description | URL |
-|--------|--------|-------------|
-| **Task Tracker** | ✅ Completed | A CLI application for managing tasks with persistent local storage |
-| **GitHub User Activity CLI** | ✅ Completed | A Go-based CLI that displays recent public GitHub user activity |
+## 📦 Projects Overview
+
+| Project | Status | Description | Link |
+|--------|--------|-------------|------|
+| **Task Tracker** | ✅ Completed | A CLI application for managing tasks with persistent local storage | https://roadmap.sh/projects/task-tracker |
+| **GitHub User Activity CLI** | ✅ Completed | A Go-based CLI that displays recent public GitHub user activity | https://roadmap.sh/projects/github-user-activity |
+
 <!-- Add future projects here -->
 
 Additional project ideas from roadmap.sh include:
