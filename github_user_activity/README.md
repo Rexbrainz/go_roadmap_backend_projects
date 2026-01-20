@@ -4,7 +4,7 @@ A command-line application written in Go that fetches and displays the **recent 
 
 This project is based on the **GitHub User Activity** project from the :contentReference[oaicite:0]{index=0} backend projects list.
 
-🔗 Project reference:(https://roadmap.sh/projects/github-user-activity)
+🔗 Project reference: https://roadmap.sh/projects/github-user-activity
 
 ---
 
