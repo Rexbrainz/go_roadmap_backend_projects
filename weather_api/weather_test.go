@@ -1,8 +1,9 @@
 package weather_test
 
 import (
-	"slices"
+	"context"
 	"os"
+	"slices"
 	"testing"
 
 	"github.com/Rexbrainz/weather"
@@ -14,9 +15,10 @@ func TestGetWeather (t *testing.T) {
 	location := "Abia,NG"
 	apikey := os.Getenv("OpenWeatherApiKey")
 	
-	app := weather.New(apikey)
-	got, err := app.GetWeather(location)
-	want, ok := app.Store.Cache[location]
+	app := weather.NewWeatherApp(apikey)
+	got, err := app.GetWeather(context.Background(), location)
+	
+	want, ok := app.Store.Get(location)
 	if !ok {
 		t.Fatal("Should not be empty")
 	}

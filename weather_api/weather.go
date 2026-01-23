@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 	"os"
 	"time"
 )
@@ -16,26 +17,10 @@ type Application struct {
 	Store	Storer
 }
 
-type Weather struct {
-	City		string
-	Country		string
-	Temperature	float64
-	Summary		string
-}
-
 type Client struct {
 	BaseURL		string
 	ApiKey		string
 	HTTPClient	*http.Client
-}
-
-type MemoryStore struct {
-	Cache	map[string]Weather
-}
-
-type Storer interface {
-	Get(city string) (Weather, bool)
-	Set(city string, weather Weather, ttl time.Duration)
 }
 
 func NewWeatherApp(apikey string) *Application {
@@ -46,58 +31,93 @@ func NewWeatherApp(apikey string) *Application {
 			Timeout: 10 * time.Second,
 		},
 	}
-	cache := &Store{
-		Cache: map[string]json.RawMessage{},
+
+	var store Storer
+
+	redisURL := os.Getenv("REDIS_URL")
+	if redisURL != "" {
+		redisStore, err := NewRedisStore(redisURL)
+		if err == nil {
+			store = redisStore
+		}
+	}
+
+	// Fallback if Redis is not configured or failed
+	if store == nil {
+		fmt.Println("Using in-memory store")
+		store = &MemStore{
+			Cache: map[string]Weather{},
+		}
 	}
 
 	app := &Application {
 		Client:	client,
-		Store:	cache,
+		Store:	store,
 	}
 	return app
 }
 
-func (c *Client) FormatURL(location string) string {
-	return fmt.Sprintf("%s/data/2.5/weather?q=%s&appid=%s", c.BaseURL, location, c.ApiKey)
+func (c *Client) FormatURL(city string) string {
+	return fmt.Sprintf("%s/data/2.5/weather?q=%s&appid=%s",
+		 c.BaseURL, url.QueryEscape(city), c.ApiKey)
 }
 
-func (app *Application) GetWeather(ctx context.Context, location string) (Weather, error) {
-	URL := app.Client.FormatURL(location)
+func (app *Application) GetWeather(ctx context.Context, city string) (Weather, error) {
+	URL := app.Client.FormatURL(city)
 
-	report, ok := app.Store.Cache[location]
+	report, ok := app.Store.Get(city)
 	if ok {
 		return report, nil
 	}
+
 	resp, err := app.Client.HTTPClient.Get(URL)
 	if err != nil {
-		return nil, err
+		return Weather{}, err
 	}
 	defer resp.Body.Close()
 
+	if resp.StatusCode != http.StatusOK {
+		return Weather{}, fmt.Errorf("unexpected error, %v", resp.Status)
+	}
 	data, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return nil, err
+		return Weather{}, err
 	}
-	if resp.StatusCode != http.StatusOK {
-		var result []byte
-
-		err := json.Unmarshal(data, &result)
-		if err != nil {
-			return nil, err
-		}
-		return nil, fmt.Errorf("%q",result)
-	}
-	app.Store.Cache[location] = data
-	return data, nil
+	
+	report, err = ParseResponse(data)
+	app.Store.Set(city, report, 15 * time.Minute)
+	return report, nil
 }
 
-// func (app *Application) serverError(w http.ResponseWriter, r *http.Request) {
-// 	var (
-// 		method 	= r.Method
-// 		uri		= r.URL.RequestURI()
-// 	)
-// 	htt
-// }
+func ParseResponse(data []byte) (Weather, error) {
+	var weather WeatherReport
+
+	if err := json.Unmarshal(data, &weather); err != nil {
+		return Weather{}, err
+	}
+
+	if len(weather.Weather) < 1 {
+		return Weather{}, ErrInvalidProviderResponse
+	}
+	report := Weather{
+		City:			weather.Name,
+		Country: 		weather.Country.Country,
+		Temp:			weather.Temp.Temp,
+		Temp_min:		weather.Temp.Temp_min,
+		Temp_max:		weather.Temp.Temp_max,
+		Condition:		weather.Weather[0].Main,
+		Description:	weather.Weather[0].Description,
+	}
+	return report, nil
+}
+
+
+func (app *Application) writeJSON(w http.ResponseWriter, status int, report Weather) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(status)
+
+	return json.NewEncoder(w).Encode(report)
+}
 
 func Main() {
 	apikey := os.Getenv("OpenWeatherApiKey")
@@ -105,14 +125,20 @@ func Main() {
 		fmt.Fprintf(os.Stderr, "%v Internal Server Error", http.StatusInternalServerError)
 		return
 	}
+
 	app := NewWeatherApp(apikey)
+
+	mux := http.NewServeMux()
+	mux.HandleFunc("GET /weather", app.getWeather)
+	mux.HandleFunc("GET /ping", app.ping)
+
 	server := &http.Server{
 		Addr:		":4000",
-		Handler:	app.route(),
+		Handler:	mux,
 	}
+
+	fmt.Println(Usage, "\nListening on port 4000")
 	err := server.ListenAndServe()
-	if err != nil {
-		fmt.Fprintln(os.Stderr, err)
-		os.Exit(1)
-	}
+	fmt.Fprintln(os.Stderr, err)
+	os.Exit(1)
 }

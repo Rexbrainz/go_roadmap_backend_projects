@@ -12,3 +12,9 @@ Context is important in your server as it carries request scoped information.
     Which means it carries info (everything) related to the current request.
     When a client disconnects. The request from that client is canceled.
     Otherwise your server will keep working on the request, wasting resources.
+
+Writing to the ResponseWriter
+    Headers must be set before WriteHeader is used.
+
+Redis
+    Redis is a shared, in memory key-value store with expiration
