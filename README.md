@@ -1,57 +1,29 @@
 # Go Backend Projects
 
-This repository is a **monorepo** of backend projects implemented in **Go** as part of the backend development learning path from **roadmap.sh**.  
-Each project lives in its own folder under `projects/` and has its own documentation.
+Monorepo of backend projects implemented in **Go** following the roadmap.sh backend track.  
+Each project lives in its own folder at the repo root and ships with its own docs.
 
-🔗 **roadmap.sh backend projects:** https://roadmap.sh/backend/projects
+🔗 roadmap.sh projects: https://roadmap.sh/backend/projects
 
 ---
 
 ## 🚀 Vision
-
-The goal of this monorepo is to:
-
-- Practice backend engineering fundamentals using Go
-- Build a portfolio of real projects
-- Demonstrate practical skills useful for backend and cloud developer roles
-- Follow a structured roadmap while learning by doing
+- Practice backend engineering fundamentals with Go
+- Build a portfolio of real, runnable projects
+- Demonstrate practical skills for backend/cloud roles
+- Learn by doing through the roadmap.sh project list
 
 ---
-
-## 📦 Projects Overview
 
 ## 📦 Projects Overview
 
 | Project | Status | Description | Link |
 |--------|--------|-------------|------|
-| **Task Tracker** | ✅ Completed | A CLI application for managing tasks with persistent local storage | https://roadmap.sh/projects/task-tracker |
-| **GitHub User Activity CLI** | ✅ Completed | A Go-based CLI that displays recent public GitHub user activity | https://roadmap.sh/projects/github-user-activity |
+| **Task Tracker** | ✅ Completed | CLI to add/update/delete tasks with local JSON persistence | https://roadmap.sh/projects/task-tracker |
+| **GitHub User Activity CLI** | ✅ Completed | CLI that fetches and formats a user's recent GitHub public events | https://roadmap.sh/projects/github-user-activity |
+| **Weather API** | ✅ Completed | HTTP API that proxies OpenWeatherMap with in-memory/Redis caching | https://roadmap.sh/projects/weather-api-wrapper-service |
 
-<!-- Add future projects here -->
-
-Additional project ideas from roadmap.sh include:
-
-- Expense Tracker CLI  
-- Number Guessing Game CLI  
-- Unit Converter Web App  
-- Personal Blog Web App  
-- Weather API  
-- Blogging Platform API  
-- Todo List API  
-- Expense Tracker API  
-- Caching Proxy  
-- Markdown Note-Taking App  
-- URL Shortening Service  
-- Broadcast Server  
-- E-Commerce API  
-- Workout Tracker API  
-- Image Processing Service  
-- Movie Reservation System  
-- Real-time Leaderboard  
-- Database Backup Utility  
-- Scalable E-Commerce Platform :contentReference[oaicite:3]{index=3}
-
-> Projects will be added here as they are completed.
+Projects will be added here as they are completed.
 
 ---
 
@@ -59,14 +31,26 @@ Additional project ideas from roadmap.sh include:
 
 ```text
 go-backend-projects/
-├── README.md                 # Monorepo overview
-├── projects/
-│   ├── task-tracker/
-│   │   ├── README.md
-│   │   ├── go.mod
-│   │   └── ...
-│   ├── github-user-activity/
-│   │   ├── README.md
-│   │   ├── go.mod
-│   │   └── ...
-│   └── <next-project>/
+├── README.md                # Monorepo overview (this file)
+├── task-tracker/            # Task Tracker CLI project
+├── github_user_activity/    # GitHub User Activity CLI project
+└── weather_api/             # Weather API project
+```
+
+---
+
+## 🧪 Running Tests
+Each project is its own Go module. Run tests from within the project directory:
+
+```bash
+cd task-tracker && go test ./...
+cd github_user_activity && go test ./...
+cd weather_api && go test ./...
+```
+
+---
+
+## 🛠 Prerequisites
+- Go toolchain (modules target Go 1.25.x as declared in go.mod files)
+- For `weather_api`: an OpenWeatherMap API key (see `weather_api/README.md` for setup)
+
