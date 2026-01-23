@@ -1,5 +1,6 @@
 package weather
 
+// Server Weather Response Model
 type Weather struct {
 	City		string	`json:"city"`
 	Country		string	`json:"country"`
@@ -10,6 +11,7 @@ type Weather struct {
 	Description	string	`json:"description"`
 }
 
+// Model after OpenWeatherMap Response
 type WeatherReport struct {
 	Weather 	[]condition `json:"weather"`
 	Temp		main		`json:"main"`

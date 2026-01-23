@@ -22,7 +22,8 @@ type Storer interface {
 	Set(string, Weather, time.Duration)
 }
 
-func (m MemStore) Get(city string) (Weather, bool) {
+// Get a weather report if cached
+func (m *MemStore) Get(city string) (Weather, bool) {
 	report, ok := m.Cache[city]
 	if !ok {
 		return Weather{}, false
@@ -30,11 +31,19 @@ func (m MemStore) Get(city string) (Weather, bool) {
 	return report, true
 }
 
+// Cache a weather report
 func (m *MemStore) Set(city string, weather Weather, ttl time.Duration) {
 	m.Cache[city] = weather
 }
 
+// Construct and return an in memory store
+func NewMemStore() *MemStore {
+	return &MemStore{
+		Cache: map[string]Weather{},
+	}
+}
 
+// Construct and return a Redis Store
 func NewRedisStore(redisURL string) (*RedisStore, error) {
 	opt, err := redis.ParseURL(redisURL)
 	if err != nil {
@@ -51,6 +60,7 @@ func NewRedisStore(redisURL string) (*RedisStore, error) {
 	}, nil
 }
 
+// Get a weather report if cached
 func (r *RedisStore) Get(city string) (Weather, bool) {
 	ctx := context.Background()
 	key := redisKey(city)
@@ -70,6 +80,7 @@ func (r *RedisStore) Get(city string) (Weather, bool) {
 	return w, true
 }
 
+// Cache a weather report
 func(r *RedisStore) Set(city string, weather Weather, ttl time.Duration) {
 	ctx := context.Background()
 	key := redisKey(city)

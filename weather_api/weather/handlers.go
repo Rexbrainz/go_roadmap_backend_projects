@@ -4,6 +4,7 @@ import (
 	"net/http"
 )
 
+// Handler for the /weather endpoint
 func (app *Application) getWeather(w http.ResponseWriter, r *http.Request) {
 	city := r.URL.Query().Get("city")
 

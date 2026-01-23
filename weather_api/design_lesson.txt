@@ -18,3 +18,13 @@ Writing to the ResponseWriter
 
 Redis
     Redis is a shared, in memory key-value store with expiration
+
+
+Tests
+    Unit tests must control their inputs
+    If a tes fails because of the environment, it's a bad test.
+    Libraries should never reach into the environment.
+
+    Do not contruct dependencies inside the thing you want to test.
+    Unit tests should not work around dependencies. They should make
+    dependencies unnecessary.

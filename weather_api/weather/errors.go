@@ -9,12 +9,14 @@ import (
 const Usage = `Send a Get http request to http://localhost:4000/weather?city={CITY_NAME,COUNTRYCODE}
 Example: http://localhost:4000/weather?city=London,Uk`
 
+// Server Errors
 var (
 	ErrCityNotFound 			= fmt.Errorf("city not found\n%s", Usage)
 	ErrProviderDown 			= errors.New("weather provider unavailable")
 	ErrInvalidProviderResponse	= errors.New("invalid response from weather api provider")
 )
 
+// Handle error cases.
 func (app *Application) writeHTTPError(w http.ResponseWriter, err error) {
 	switch {
 	case errors.Is(err, ErrCityNotFound):
