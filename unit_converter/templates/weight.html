@@ -1,0 +1,22 @@
+{{define "content"}}
+<h1>Weight Converter</h1>
+
+<form method="POST">
+    <input name="value" required>
+
+    <select name="from">
+        <option value="gram">Gram</option>
+        <option value="kilogram">Kilogram</option>
+    </select>
+
+    <select name="to">
+        <option value="kilogram">Kilogram</option>
+        <option value="gram">Gram</option>
+    </select>
+
+    <button type="submit">Convert</button>
+</form>
+
+{{if .Result}}<p>Result: {{.Result}}</p>{{end}}
+{{if .Error}}<p style="color:red">{{.Error}}</p>{{end}}
+{{end}}

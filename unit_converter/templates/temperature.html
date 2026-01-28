@@ -1,0 +1,22 @@
+{{define "content"}}
+<h1>Temperature Converter</h1>
+
+<form method="POST">
+    <input name="value" required>
+
+    <select name="from">
+        <option value="celsius">Celsius</option>
+        <option value="fahrenheit">Fahrenheit</option>
+    </select>
+
+    <select name="to">
+        <option value="fahrenheit">Fahrenheit</option>
+        <option value="celsius">Celsius</option>
+    </select>
+
+    <button type="submit">Convert</button>
+</form>
+
+{{if .Result}}<p>Result: {{.Result}}</p>{{end}}
+{{if .Error}}<p style="color:red">{{.Error}}</p>{{end}}
+{{end}}

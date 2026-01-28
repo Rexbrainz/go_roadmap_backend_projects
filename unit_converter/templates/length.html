@@ -1,0 +1,22 @@
+{{define "content"}}
+<h1>Length Converter</h1>
+
+<form method="POST">
+    <input name="value" required>
+
+    <select name="from">
+        <option value="meter">Meter</option>
+        <option value="kilometer">Kilometer</option>
+    </select>
+
+    <select name="to">
+        <option value="kilometer">Kilometer</option>
+        <option value="meter">Meter</option>
+    </select>
+
+    <button type="submit">Convert</button>
+</form>
+
+{{if .Result}}<p>Result: {{.Result}}</p>{{end}}
+{{if .Error}}<p style="color:red">{{.Error}}</p>{{end}}
+{{end}}
