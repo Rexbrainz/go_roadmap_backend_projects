@@ -23,7 +23,6 @@ func (app *Application) getWeather(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-
 func (app *Application) ping(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("OK"))
